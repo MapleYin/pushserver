@@ -25,8 +25,10 @@ class UserServer extends baseServer_1.BaseServer {
             }
         }
         catch (e) {
+            console.log("validateUser Error:");
             console.log(e);
-            return e;
+            return baseServer_1.CreateErrorResponse(baseServer_1.StatusCode.accountError);
+            ;
         }
     }
     async userRegist(username, password) {

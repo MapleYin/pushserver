@@ -34,8 +34,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // 	}
 // }));
 
-// subdomains.use('api');
-// app.use(subdomains.middleware);
+subdomains.use('api');
+app.use(subdomains.middleware);
 app.use(router);
 
 
