@@ -2,78 +2,61 @@ import JsonWebTokenValidate = require("express-jwt");
 import JsonWebToken = require("jsonwebtoken");
 import * as express from "express";
 import NodeCache = require( "node-cache" );
+import CryptoJS = require('crypto-js');
+import {userServer} from '../server/userServer';
+
 
 let nodeCache = new NodeCache({
 	stdTTL : 15 * 24 * 3600
 });
+let SECRET = 'v1.push.maple.im';
+let EXPIRES = '15d';
 
-namespace JWT{
-	let SECRET = 'v1.push.maple.im';
-	let EXPIRES = '15d';
-
-	// secret: secretType | SecretCallback;
-// userProperty?: string;
-// skip?: string[];
-// credentialsRequired?: boolean;
-// isRevoked?: IsRevokedCallback;
-// requestProperty?: string;
-// getToken?: GetTokenCallback;
-// [property: string]: any;
-
-// var secretCallback = function(req, payload, done){
-//   var issuer = payload.iss;
-
-//   data.getTenantByIdentifier(issuer, function(err, tenant){
-//     if (err) { return done(err); }
-//     if (!tenant) { return done(new Error('missing_secret')); }
-
-//     var secret = utilities.decrypt(tenant.secret);
-//     done(null, secret);
-//   });
-// };
-
-// 	var isRevokedCallback = function(req, payload, done){
-//   var issuer = payload.iss;
-//   var tokenId = payload.jti;
-
-//   data.getRevokedToken(issuer, tokenId, function(err, token){
-//     if (err) { return done(err); }
-//     return done(null, !!token);
-//   });
-// };
-	let options = {
-		secret : (req, payload, done)=>{
-			console.log("secret:");
-			console.log(payload);
-			done(null,SECRET);
-		},
-		isRevoked:(req, payload, done)=>{
-			console.log("isRevoked:");
-			console.log(payload);
-			return false;
+let options = {
+	secret : (req, payload, done)=>{
+		var secret;
+		if(payload && payload.username) {
+			secret = nodeCache.get<string>(payload.username);
 		}
-	};
+		if(secret) {
+			done(null,secret);
+		}else{
+			let result = userServer.findByUserName(payload.username);
+			result.then((result)=>{
+				if(result && result.length > 0) {
+					let userInfo = result[0];
+					secret = userInfo.secret
+					done(null,secret);
+				}else{
+					done("No Secret Found!",null);
+				}
+			}).catch((reason)=>{
+				done("No Secret Found!",null);
+			});
+		}	
+	},
+	isRevoked:(req, payload, done)=>{
+		done(null,false);
+	}
+};
 
-	export let ValidateExpress = JsonWebTokenValidate(options);
+export let ValidateExpress = JsonWebTokenValidate(options);
 
-	export function createToken(id:string){
-		return JsonWebToken.sign({userId:id},SECRET,{
-			expiresIn : EXPIRES,
-			jwtid : id
-		});
-	};
-	// 33 ~ 126
-	export function createRandomSecret(length:number){
-		let charArray = [];
-		while(length > 0){
-			charArray.push(String.fromCharCode(Math.random()*93+33));
-			length--;
-		}
-		return charArray.join('');
-	};
-}
-
-export = JWT;
+export function createToken(username:string,secret:string){
+	nodeCache.set(username,secret);
+	return JsonWebToken.sign({username:username},secret,{
+		expiresIn : EXPIRES
+	});
+};
+// 33 ~ 126
+export function createRandomSecret(length:number){
+	let charArray = [];
+	while(length > 0){
+		charArray.push(String.fromCharCode(Math.random()*93+33));
+		length--;
+	}
+	return charArray.join('');
+};
 
 
 

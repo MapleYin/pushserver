@@ -33,6 +33,7 @@ export class BaseServer{
 
 
 	protected query(queryString:string,params?:any):Promise<any>{
+		console.log(queryString,params);
 		return new Promise(function(resolve,reject){
 			DBPool.query(queryString,params,function(error,result,fields){
 				if(!error) {

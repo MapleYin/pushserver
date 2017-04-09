@@ -33,6 +33,7 @@ class BaseServer {
     select() {
     }
     query(queryString, params) {
+        console.log(queryString, params);
         return new Promise(function (resolve, reject) {
             db_1.DBPool.query(queryString, params, function (error, result, fields) {
                 if (!error) {

@@ -1,6 +1,6 @@
 import {BaseServer,CreateBaseResponse,CreateErrorResponse,StatusCode} from "./baseServer"
 import CryptoJS = require('crypto-js');
-import * as JWT from "../util/token"
+import {createToken,createRandomSecret} from '../util/token'
 
 class UserServer extends BaseServer{
 
@@ -17,17 +17,18 @@ class UserServer extends BaseServer{
 	async validateUser(username:string,password:string){
 		password = CryptoJS.SHA256(password).toString();
 		try{
-			let result = await this.query('SELECT id FROM user WHERE username = ? AND password = ? LIMIT 1',[username,password]);
+			let result = await this.findBy(['username','password'],[username,password]);
 			if(result && result.length > 0) {
 				let info = result[0];
-				let token = JWT.createToken(info.id.toString());
+				let token = createToken(info.username,info.secret);
 				return CreateBaseResponse<string>(token);
 			}else{
 				return CreateErrorResponse(StatusCode.accountError);
 			}
 		}catch(e){
+			console.log("validateUser Error:");
 			console.log(e);
-			return e;
+			return CreateErrorResponse(StatusCode.accountError);;
 		}
 		
 	}
@@ -61,22 +62,40 @@ class UserServer extends BaseServer{
 		if(userResult && userResult.length > 0) {
 			throw CreateErrorResponse(StatusCode.accountExisted);
 		}
-		
-		let result = await this.query('INSERT INTO user SET ?',{
-			username:username,
-			password:password,
-			secret : JWT.createRandomSecret(10)
-		});
-		return result;
+
+		try{
+			password = CryptoJS.SHA256(password).toString();
+			let result = await this.query('INSERT INTO user SET ?',{
+				username:username,
+				password:password,
+				secret : createRandomSecret(10)
+			});
+			console.log(result);
+			if(result && result.insertId) {
+				return CreateBaseResponse<any>(null);
+			}else{
+				throw CreateErrorResponse(StatusCode.universal);
+				
+			}
+		}catch(e){
+			console.log(e);
+			throw CreateErrorResponse(StatusCode.universal);
+		}
 	}
 
 	private async findBy(params:string|[string],value:(string|number)|[string|number],limit?:number){
 		var matchParams:string;
+		console.log(params,value);
 		if(Array.isArray(params) && Array.isArray(value)) {
 			let paramsArray = params as Array<string>;
 			matchParams = paramsArray.join(' = ? AND ')+' = ?';
-		}else if(typeof params == 'string' && typeof value == 'string'){
+		}else if(!Array.isArray(params) && !Array.isArray(value)){
 			value = [value];
+			matchParams = params +' = ?';
+		}
+		if(!matchParams) {
+			throw "Error Params or Value";
+			
 		}
 		let result = await this.query(`SELECT * FROM user WHERE ${matchParams}`,value);
 		return result;

@@ -1,5 +1,5 @@
 import * as express from "express";
-import * as JWT from '../util/token'
+import {ValidateExpress} from '../util/token'
 import {userServer} from '../server/userServer'
 
 
@@ -18,9 +18,6 @@ export let apiRouter = function(router:express.Router){
 	});
 
 	// register
-	router.post('/api/validate',function(req,res){
-	});
-
 	router.post('/api/register',async function(req,res){
 		let username = req.body.username;
 		let password = req.body.password;
@@ -32,15 +29,12 @@ export let apiRouter = function(router:express.Router){
 		}
 	});
 
-    // auth
-	router.all('/api/*',JWT.ValidateExpress,function(req,res,next){
+    // need authorized
+	router.all('/api/*',ValidateExpress,function(req,res,next){
 		next();
 	});
 
 	router.post('/api/message',function(req,res){
-		res.json({
-			message:'message'
-		});
 	});
 
 	router.all('*',function(req,res){

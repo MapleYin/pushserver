@@ -2,6 +2,7 @@
 var StatusCode;
 (function (StatusCode) {
     StatusCode[StatusCode["success"] = 0] = "success";
+    // error
     StatusCode[StatusCode["unauthorized"] = 100] = "unauthorized";
     StatusCode[StatusCode["accountError"] = 101] = "accountError";
     StatusCode[StatusCode["accountExisted"] = 102] = "accountExisted";

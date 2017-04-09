@@ -1,9 +1,11 @@
 export enum StatusCode{
 	success = 0,
+	// error
 	unauthorized = 100,
 	accountError = 101, // 账号或密码错误
 	accountExisted = 102,
 	missParams = 200,
+
 	universal = 500
 }
 
