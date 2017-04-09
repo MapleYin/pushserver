@@ -1,7 +1,7 @@
 "use strict";
 exports.dbSetting = {
-    cookieSecret: 'pushSecret',
-    db: 'push',
     host: 'localhost',
-    prot: 27017
+    user: 'root',
+    password: 'maple1105',
+    database: 'push'
 };
