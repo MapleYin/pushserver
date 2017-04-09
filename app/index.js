@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 // import MySQLStoreFactory = require("express-mysql-session");
 // import connectMongo = require('connect-mongo')
 const router_1 = require("./routers/router");
+const subdomains = require("express-subdomains");
 // const MongoStore = connectMongo(session);
 // let MySQLStore = MySQLStoreFactory(session);
 // var options = {
@@ -26,8 +27,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // 		maxAge: 15*24*3600000
 // 	}
 // }));
-// subdomains.use('api');
-// app.use(subdomains.middleware);
+subdomains.use('api');
+app.use(subdomains.middleware);
 app.use(router_1.router);
 app.use(function (err, req, res, next) {
     if (err.name === 'UnauthorizedError') {

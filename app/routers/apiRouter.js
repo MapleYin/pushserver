@@ -13,8 +13,6 @@ exports.apiRouter = function (router) {
         res.json(result);
     });
     // register
-    router.post('/api/validate', function (req, res) {
-    });
     router.post('/api/register', async function (req, res) {
         let username = req.body.username;
         let password = req.body.password;
@@ -26,15 +24,11 @@ exports.apiRouter = function (router) {
             res.json(e);
         }
     });
-    // auth
+    // need authorized
     router.all('/api/*', token_1.ValidateExpress, function (req, res, next) {
-        console.log('/api/*');
         next();
     });
     router.post('/api/message', function (req, res) {
-        res.json({
-            message: 'message'
-        });
     });
     router.all('*', function (req, res) {
         res.sendStatus(404);
