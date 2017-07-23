@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var StatusCode;
 (function (StatusCode) {
     StatusCode[StatusCode["success"] = 0] = "success";

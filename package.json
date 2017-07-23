@@ -5,22 +5,12 @@
   "dependencies": {
   	"express": "~4.13.1",
     "express-subdomains" : "*",
-    "express-session" : "*",
-    "express-mysql-session" : "*",
     "express-jwt" : "*",
     "jsonwebtoken" : "*",
-    "connect":"*",
   	"mysql" : "*",
-    "sql" : "*",
     "node-cache" : "*",
     "crypto-js" : "*",
   	"apn":"*",
-    "socket.io": "*",
-    "socket.io-events": "^0.4.6",
-    "mongoose": "*",
-    "connect-mongo" : "*",
-    "cookie-parser": "~1.3.5",
-    "body-parser": "~1.13.2",
-    "multer" : "*"
+    "body-parser": "~1.13.2"
   }
 }

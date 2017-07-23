@@ -1,13 +1,12 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import connect = require("connect");
+// import connect = require("connect");
 
 // import session = require("express-session");
 // import MySQLStoreFactory = require("express-mysql-session");
 // import connectMongo = require('connect-mongo')
 import {router} from './routers/router';
 import subdomains = require("express-subdomains");
-
 // const MongoStore = connectMongo(session);
 
 // let MySQLStore = MySQLStoreFactory(session);

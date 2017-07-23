@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Apn = require("apn");
 const fs = require("fs");
 const path = require("path");
@@ -12,14 +13,13 @@ class PushServer {
             key: key
         });
     }
-    sendAlert() {
-        return this;
-    }
-    sendPush() {
+    sendPush(payload) {
         this.currentPushPayload = new Apn.Notification();
+        this.currentPushPayload.alert = payload;
         return this;
     }
-    toUsers() {
+    toUsers(userToken) {
+        this.apnProvider.send(this.currentPushPayload, userToken);
     }
 }
 exports.pushServer = new PushServer();

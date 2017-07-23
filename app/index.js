@@ -1,6 +1,8 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const bodyParser = require("body-parser");
+// import connect = require("connect");
 // import session = require("express-session");
 // import MySQLStoreFactory = require("express-mysql-session");
 // import connectMongo = require('connect-mongo')

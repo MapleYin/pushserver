@@ -2,6 +2,7 @@
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("../db/db");
 const defined_1 = require("./defined");
 __export(require("./defined"));
